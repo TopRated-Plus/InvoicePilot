@@ -118,4 +118,52 @@ function Dashboard() {
 
         {bills.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-gray-500 text-sm mb-4"></p>
+            <p className="text-gray-500 text-sm mb-4">
+              No bills yet. Create your first bill.
+            </p>
+            <Link
+              to="/bills/new"
+              className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
+              Create Bill
+            </Link>
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {bills.slice(0, 5).map(bill => (
+              <Link
+                key={bill.id}
+                to={`/bills/${bill.id}`}
+                className="flex items-center justify-between p-4 hover:bg-gray-50">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {bill.clientName}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {bill.invoiceNumber}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {formatAmount(bill.amount)}
+                  </p>
+                  <span className={`text-xs px-2 py-0.5 rounded font-medium ${
+                    bill.status === 'paid'
+                      ? 'bg-green-100 text-green-700'
+                      : bill.status === 'overdue'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {bill.status}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
+export default Dashboard;

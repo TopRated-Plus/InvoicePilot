@@ -81,6 +81,7 @@ router.post('/', verifyToken, async (req, res) => {
 
     // Send first email reminder immediately
     await sendEmailReminder({
+      billId: billRef.id, 
       clientEmail,
       clientName,
       businessName: user.businessName,
@@ -169,6 +170,7 @@ router.post('/:id/remind', verifyToken, async (req, res) => {
     const user = userDoc.data();
 
     await sendEmailReminder({
+      billId: req.params.id,
       clientEmail: bill.clientEmail,
       clientName: bill.clientName,
       businessName: user.businessName,
