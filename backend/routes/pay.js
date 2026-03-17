@@ -31,16 +31,25 @@ router.get('/:billId', async (req, res) => {
       `);
     }
 
-    // Extract UPI ID
+    // Extract UPI ID cleanly
     const upiUrl = new URL(bill.upiLink.replace('upi://', 'http://upi/'));
     const pa = upiUrl.searchParams.get('pa') || '';
     const am = bill.amount;
+    const tn = encodeURIComponent(bill.invoiceNumber || '');
+    const pn = encodeURIComponent(bill.userId || '');
 
     const amount = new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0
     }).format(bill.amount);
+
+    // UPI links for each app
+    const params = `pa=${pa}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+    const upiDeepLink = `upi://pay?${params}`;
+    const gpayLink = `gpay://upi/pay?${params}`;
+    const phonepeLink = `phonepe://pay?${params}`;
+    const paytmLink = `paytmmp://pay?${params}`;
 
     res.send(`
       <html>
@@ -59,52 +68,74 @@ router.get('/:billId', async (req, res) => {
           .card {
             background: white;
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             margin-bottom: 12px;
             border: 1px solid #e5e7eb;
-            text-align: center;
           }
           .amount {
             font-size: 44px;
             font-weight: bold;
             color: #16a34a;
             margin: 8px 0;
+            text-align: center;
           }
           .upi-box {
             background: #f0fdf4;
             border: 1.5px dashed #16a34a;
             border-radius: 10px;
             padding: 16px;
-            margin: 16px 0;
+            margin: 4px 0 12px 0;
             text-align: center;
           }
-          .upi-label {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 6px;
-          }
           .upi-id {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: #111827;
             letter-spacing: 0.5px;
+            margin: 6px 0;
+            word-break: break-all;
           }
           .copy-btn {
             background: #16a34a;
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 14px;
             margin-top: 10px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%;
           }
-          .steps {
+          .app-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+          }
+          .btn-gpay {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 12px;
+            color: #202124;
+            border: 1.5px solid #dadce0;
+          }
+          .btn-phonepe {
+            background: #5f259f;
+            color: white;
+          }
+          .btn-paytm {
+            background: #002970;
+            color: white;
+          }
+          .btn-upi {
+            background: #f3f4f6;
+            color: #374151;
             border: 1px solid #e5e7eb;
           }
           .step {
@@ -126,15 +157,12 @@ router.get('/:billId', async (req, res) => {
             font-size: 12px;
             font-weight: bold;
             flex-shrink: 0;
+            margin-top: 2px;
           }
           .step-text {
             font-size: 14px;
             color: #374151;
             line-height: 1.5;
-          }
-          .step-bold {
-            font-weight: bold;
-            color: #111827;
           }
           .info-row {
             display: flex;
@@ -144,127 +172,179 @@ router.get('/:billId', async (req, res) => {
             font-size: 14px;
           }
           .info-row:last-child { border-bottom: none; }
-          .info-label { color: #6b7280; }
-          .info-value { font-weight: 600; color: #111827; }
+          .tip {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #92400e;
+            margin-bottom: 12px;
+            text-align: center;
+          }
         </style>
       </head>
       <body>
 
-        <div class="card">
+        <div class="tip">
+          📱 For best experience open this link in <strong>Chrome browser</strong>
+        </div>
+
+        <div class="card" style="text-align:center;">
           <div style="font-size:13px;color:#6b7280;">Pay to</div>
-          <div style="font-size:18px;font-weight:bold;color:#111827;margin:4px 0;">
+          <div style="font-size:17px;font-weight:bold;color:#111827;margin:4px 0;">
             ${bill.userId}
           </div>
           <div class="amount">${amount}</div>
           <div style="font-size:13px;color:#6b7280;">${bill.invoiceNumber}</div>
+          ${bill.description ? `<div style="font-size:13px;color:#6b7280;margin-top:2px;">${bill.description}</div>` : ''}
+        </div>
+
+        <div class="card">
+          <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;">
+            Invoice Details
+          </div>
+          <div class="info-row">
+            <span style="color:#6b7280;">Invoice</span>
+            <span style="font-weight:600;">${bill.invoiceNumber}</span>
+          </div>
+          <div class="info-row">
+            <span style="color:#6b7280;">Amount Due</span>
+            <span style="font-weight:600;color:#16a34a;">${amount}</span>
+          </div>
+          <div class="info-row">
+            <span style="color:#6b7280;">Description</span>
+            <span style="font-weight:600;">${bill.description || '-'}</span>
+          </div>
         </div>
 
         <div class="card">
           <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">
-            Invoice Details
+            Pay directly via UPI app
           </div>
-          <div class="info-row">
-            <span class="info-label">Invoice</span>
-            <span class="info-value">${bill.invoiceNumber}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Amount</span>
-            <span class="info-value" style="color:#16a34a;">${amount}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Description</span>
-            <span class="info-value">${bill.description || '-'}</span>
-          </div>
+
+          <a href="${gpayLink}"
+             onclick="openUPI('${gpayLink}', event)"
+             class="app-btn btn-gpay">
+            Google Pay
+          </a>
+
+          <a href="${phonepeLink}"
+             onclick="openUPI('${phonepeLink}', event)"
+             class="app-btn btn-phonepe">
+            PhonePe
+          </a>
+
+          <a href="${paytmLink}"
+             onclick="openUPI('${paytmLink}', event)"
+             class="app-btn btn-paytm">
+            Paytm
+          </a>
+
+          <a href="${upiDeepLink}"
+             onclick="openUPI('${upiDeepLink}', event)"
+             class="app-btn btn-upi">
+            Other UPI App
+          </a>
         </div>
 
         <div class="upi-box">
-          <div class="upi-label">UPI ID — Send money to this ID</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">
+            Or copy UPI ID and pay manually
+          </div>
           <div class="upi-id" id="upiId">${pa}</div>
-          <div style="font-size:13px;color:#16a34a;margin-top:4px;">
-            Amount: <strong>₹${am}</strong>
+          <div style="font-size:13px;color:#16a34a;margin-top:6px;">
+            Enter amount: <strong>₹${am}</strong>
           </div>
           <button class="copy-btn" onclick="copyUPI()">
             Copy UPI ID
           </button>
         </div>
 
-        <div class="steps">
+        <div class="card">
           <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:14px;">
-            How to pay in 3 steps
+            How to pay manually
           </div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-text">
-              Open <span class="step-bold">GPay, PhonePe, Paytm</span> 
-              or any UPI app on your phone
+              Open <strong>GPay, PhonePe or Paytm</strong>
             </div>
           </div>
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-text">
-              Tap <span class="step-bold">Send Money</span> → 
-              <span class="step-bold">UPI ID</span> and paste:
-              <br>
-              <span style="background:#f3f4f6;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:13px;">${pa}</span>
+              Tap <strong>Send Money → UPI ID</strong><br>
+              Paste: <span style="background:#f3f4f6;padding:3px 8px;border-radius:4px;font-family:monospace;">${pa}</span>
             </div>
           </div>
           <div class="step">
             <div class="step-num">3</div>
             <div class="step-text">
-              Enter amount <span class="step-bold">₹${am}</span> 
-              and your <span class="step-bold">UPI PIN</span> to pay
+              Enter amount <strong>₹${am}</strong> and your UPI PIN
             </div>
           </div>
         </div>
 
-        <p style="font-size:12px;color:#9ca3af;text-align:center;line-height:1.6;">
+        <p style="font-size:12px;color:#9ca3af;text-align:center;line-height:1.6;margin-bottom:24px;">
           Payment goes directly to the business.<br>
           Keep your UPI PIN confidential.
         </p>
 
         <script>
-        function copyUPI() {
-          const upiId = document.getElementById('upiId').innerText;
-          const btn = document.querySelector('.copy-btn');
-      
-          // Method 1 - Modern clipboard API
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(upiId).then(() => {
-              btn.innerText = 'Copied!';
-              btn.style.background = '#15803d';
-              setTimeout(() => {
-                btn.innerText = 'Copy UPI ID';
-                btn.style.background = '#16a34a';
-              }, 2000);
-            });
-            return;
+          function openUPI(url, e) {
+            e.preventDefault();
+            window.location.href = url;
+            setTimeout(function() {
+              if (!document.hidden) {
+                document.getElementById('fallback').style.display = 'block';
+              }
+            }, 2500);
           }
-      
-          // Method 2 - Fallback for HTTP
-          const el = document.createElement('textarea');
-          el.value = upiId;
-          el.style.position = 'fixed';
-          el.style.left = '-9999px';
-          el.style.top = '-9999px';
-          document.body.appendChild(el);
-          el.focus();
-          el.select();
-      
-          try {
-            document.execCommand('copy');
-            btn.innerText = 'Copied!';
+
+          function copyUPI() {
+            const upiId = document.getElementById('upiId').innerText;
+            const btn = document.querySelector('.copy-btn');
+
+            if (navigator.clipboard && window.isSecureContext) {
+              navigator.clipboard.writeText(upiId).then(() => {
+                showCopied(btn);
+              });
+              return;
+            }
+
+            const el = document.createElement('textarea');
+            el.value = upiId;
+            el.style.position = 'fixed';
+            el.style.left = '-9999px';
+            el.style.top = '-9999px';
+            document.body.appendChild(el);
+            el.focus();
+            el.select();
+
+            try {
+              document.execCommand('copy');
+              showCopied(btn);
+            } catch (err) {
+              btn.innerText = 'Select and copy manually';
+            }
+
+            document.body.removeChild(el);
+          }
+
+          function showCopied(btn) {
+            btn.innerText = '✓ Copied!';
             btn.style.background = '#15803d';
             setTimeout(() => {
               btn.innerText = 'Copy UPI ID';
               btn.style.background = '#16a34a';
-            }, 2000);
-          } catch (err) {
-            btn.innerText = 'Copy manually';
+            }, 2500);
           }
-      
-          document.body.removeChild(el);
-        }
-      </script>
+        </script>
+
+        <div id="fallback" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#92400e;text-align:center;">
+          App not installed? Copy the UPI ID above and pay manually.
+        </div>
 
       </body>
       </html>
