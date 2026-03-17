@@ -11,7 +11,7 @@ router.get('/', verifyToken, async (req, res) => {
     const uid = req.user.uid;
     const snapshot = await db.collection('bills')
       .where('userId', '==', uid)
-      .orderBy('createdAt', 'desc')
+      // .orderBy('createdAt', 'desc')
       .get();
 
     const bills = [];
