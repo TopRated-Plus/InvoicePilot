@@ -15,6 +15,7 @@ import ClientDetail from './pages/ClientDetail';
 import Settings from './pages/Settings';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
+import Landing from './pages/landing/Landing';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,7 +42,13 @@ function App() {
       {user && <Navbar />}
       <div className={user ? 'pt-16' : ''}>
         <Routes>
-          {/* Public routes */}
+
+          {/* Landing page — public */}
+          <Route path="/" element={
+            user ? <Navigate to="/dashboard" /> : <Landing />
+          } />
+
+          {/* Auth routes */}
           <Route path="/login" element={
             !user ? <Login /> : <Navigate to="/dashboard" />
           } />
@@ -51,50 +58,30 @@ function App() {
 
           {/* Private routes */}
           <Route path="/dashboard" element={
-            <PrivateRoute user={user}>
-              <Dashboard />
-            </PrivateRoute>
+            <PrivateRoute user={user}><Dashboard /></PrivateRoute>
           } />
           <Route path="/bills" element={
-            <PrivateRoute user={user}>
-              <Bills />
-            </PrivateRoute>
+            <PrivateRoute user={user}><Bills /></PrivateRoute>
           } />
           <Route path="/bills/new" element={
-            <PrivateRoute user={user}>
-              <NewBill />
-            </PrivateRoute>
+            <PrivateRoute user={user}><NewBill /></PrivateRoute>
           } />
           <Route path="/bills/:id" element={
-            <PrivateRoute user={user}>
-              <BillDetail />
-            </PrivateRoute>
+            <PrivateRoute user={user}><BillDetail /></PrivateRoute>
           } />
           <Route path="/clients" element={
-            <PrivateRoute user={user}>
-              <Clients />
-            </PrivateRoute>
+            <PrivateRoute user={user}><Clients /></PrivateRoute>
           } />
           <Route path="/clients/new" element={
-            <PrivateRoute user={user}>
-              <NewClient />
-            </PrivateRoute>
+            <PrivateRoute user={user}><NewClient /></PrivateRoute>
           } />
           <Route path="/clients/:id" element={
-            <PrivateRoute user={user}>
-              <ClientDetail />
-            </PrivateRoute>
+            <PrivateRoute user={user}><ClientDetail /></PrivateRoute>
           } />
           <Route path="/settings" element={
-            <PrivateRoute user={user}>
-              <Settings />
-            </PrivateRoute>
+            <PrivateRoute user={user}><Settings /></PrivateRoute>
           } />
 
-          {/* Default redirect */}
-          <Route path="/" element={
-            <Navigate to={user ? '/dashboard' : '/login'} />
-          } />
         </Routes>
       </div>
     </BrowserRouter>
