@@ -252,7 +252,7 @@ router.get('/:billId', async (req, res) => {
           <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">
             Or copy UPI ID and pay manually
           </div>
-          <div class="upi-id" id="upiId">${pa}</div>
+          <div class="upi-id" id="upiId">${pa.trim()}</div>
           <div style="font-size:13px;color:#16a34a;margin-top:6px;">
             Enter amount: <strong>₹${am}</strong>
           </div>
@@ -303,42 +303,79 @@ router.get('/:billId', async (req, res) => {
           }
 
           function copyUPI() {
-            const upiId = document.getElementById('upiId').innerText;
+            // Get and clean UPI ID
+            const raw = document.getElementById('upiId').innerText;
+            const upiId = raw.trim().replace(/\s+/g, '').replace(/\n/g, '');
             const btn = document.querySelector('.copy-btn');
-
+          
+            // Validate UPI ID format before copying
+            const upiRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/;
+            if (!upiRegex.test(upiId)) {
+              btn.innerText = 'Invalid UPI ID!';
+              btn.style.background = '#dc2626';
+              setTimeout(() => {
+                btn.innerText = 'Copy UPI ID';
+                btn.style.background = '#16a34a';
+              }, 2000);
+              return;
+            }
+          
+            // Method 1 — Modern clipboard API (HTTPS)
             if (navigator.clipboard && window.isSecureContext) {
               navigator.clipboard.writeText(upiId).then(() => {
-                showCopied(btn);
+                showCopied(btn, upiId);
+              }).catch(() => {
+                fallbackCopy(upiId, btn);
               });
               return;
             }
-
+          
+            // Method 2 — Fallback (HTTP)
+            fallbackCopy(upiId, btn);
+          }
+          
+          function fallbackCopy(upiId, btn) {
             const el = document.createElement('textarea');
             el.value = upiId;
             el.style.position = 'fixed';
             el.style.left = '-9999px';
             el.style.top = '-9999px';
+            el.setAttribute('readonly', '');
             document.body.appendChild(el);
             el.focus();
             el.select();
-
+            el.setSelectionRange(0, 99999);
+          
             try {
-              document.execCommand('copy');
-              showCopied(btn);
+              const success = document.execCommand('copy');
+              if (success) {
+                showCopied(btn, upiId);
+              } else {
+                showManual(btn);
+              }
             } catch (err) {
-              btn.innerText = 'Select and copy manually';
+              showManual(btn);
             }
-
+          
             document.body.removeChild(el);
           }
-
-          function showCopied(btn) {
-            btn.innerText = '✓ Copied!';
+          
+          function showCopied(btn, upiId) {
+            btn.innerText = '✓ Copied: ' + upiId;
             btn.style.background = '#15803d';
             setTimeout(() => {
               btn.innerText = 'Copy UPI ID';
               btn.style.background = '#16a34a';
-            }, 2500);
+            }, 3000);
+          }
+          
+          function showManual(btn) {
+            btn.innerText = 'Long press UPI ID to copy';
+            btn.style.background = '#854d0e';
+            setTimeout(() => {
+              btn.innerText = 'Copy UPI ID';
+              btn.style.background = '#16a34a';
+            }, 3000);
           }
         </script>
 
