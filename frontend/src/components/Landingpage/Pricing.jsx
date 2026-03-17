@@ -2,19 +2,19 @@ import { Link } from 'react-router-dom';
 
 const plans = [
   {
-    name: 'Starter', price: '199', desc: 'Perfect for freelancers and solo business owners with up to 50 invoices per month.',
+    name: 'Starter', price: '499', desc: 'Perfect for freelancers and solo business owners with up to 50 invoices per month.',
     features: ['Up to 50 bills per month', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard'],
     disabled: ['WhatsApp reminders', 'AI calling'],
     featured: false
   },
   {
-    name: 'Growth', price: '499', desc: 'For growing businesses with multiple clients and higher invoice volumes.',
+    name: 'Growth', price: '999', desc: 'For growing businesses with multiple clients and higher invoice volumes.',
     features: ['Up to 200 bills per month', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard', 'WhatsApp reminders'],
     disabled: ['AI calling'],
     featured: true
   },
   {
-    name: 'Business', price: '999', desc: 'For distributors, manufacturers and agencies with high invoice volumes.',
+    name: 'Business', price: '1999', desc: 'For distributors, manufacturers and agencies with high invoice volumes.',
     features: ['Unlimited bills', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard', 'WhatsApp reminders', 'AI calling (multilingual)'],
     disabled: [],
     featured: false
@@ -27,10 +27,11 @@ export default function Pricing() {
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <span className="section-badge">Pricing</span>
         <h2 className="section-title">Simple, honest pricing.</h2>
-        <p className="section-sub">No hidden fees. No transaction commissions. Cancel anytime.</p>
+        <p className="section-sub">No hidden fees. No transaction commissions upto 1Lac. Cancel anytime.</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20, marginTop: 56, alignItems: 'start' }}>
           {plans.map((plan, i) => (
+            // eslint-disable-next-line no-dupe-keys
             <div key={i} style={{ background: 'var(--lp-black)', border: `1px solid ${plan.featured ? 'var(--green)' : 'var(--lp-border)'}`, borderRadius: 16, padding: 36, position: 'relative', background: plan.featured ? 'rgba(0,194,122,0.04)' : 'var(--lp-black)' }}>
               {plan.featured && (
                 <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', background: 'var(--green)', color: 'var(--lp-black)', fontSize: 11, fontWeight: 700, padding: '4px 16px', borderRadius: 100, fontFamily: "'Syne',sans-serif", whiteSpace: 'nowrap' }}>

@@ -19,7 +19,7 @@ export default function Hero() {
       </h1>
 
       <p style={{ fontSize: 'clamp(16px,2vw,20px)', color: 'var(--lp-muted)', maxWidth: 560, lineHeight: 1.6, fontWeight: 300, marginBottom: 40, animation: 'fadeUp 0.6s ease 0.2s both' }}>
-        Payflo automatically follows up on every unpaid invoice via Email — so you never have to make an awkward payment call again.
+        Payflo automatically follows up on every unpaid invoice via Email so you never have to make an payment call again.
       </p>
 
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeUp 0.6s ease 0.3s both' }}>
@@ -28,7 +28,7 @@ export default function Hero() {
       </div>
 
       <p style={{ marginTop: 16, fontSize: 13, color: 'var(--lp-muted)', animation: 'fadeUp 0.6s ease 0.4s both' }}>
-        No credit card required · Free to start · Takes 2 minutes
+        No credit card required · Free to start · Takes 30 seconds
       </p>
     </div>
   );
