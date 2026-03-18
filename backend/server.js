@@ -7,7 +7,6 @@ dotenv.config();
 
 const app = express();
 
-// CORS — allow all origins for now
 app.use(cors({
   origin: true,
   credentials: true,
@@ -15,22 +14,19 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.options('*', cors());
+app.options('/(.*)', cors());
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bills', require('./routes/bills'));
 app.use('/api/clients', require('./routes/clients'));
 app.use('/api/reminders', require('./routes/reminders'));
 app.use('/pay', require('./routes/pay'));
 
-// Health check
 app.get('/', (req, res) => {
   res.json({ message: 'Payflo API running' });
 });
 
-// Start scheduler
 startScheduler();
 
 const PORT = process.env.PORT || 5000;
