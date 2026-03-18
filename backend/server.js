@@ -32,3 +32,12 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Payflo backend running on port ${PORT}`);
 });
+
+// Self ping every 30 seconds — prevents Render sleep
+setInterval(async () => {
+  try {
+    const url = process.env.BACKEND_URL || 'https://payflo-backend.onrender.com';
+    await fetch(url + '/');
+    console.log('Keep alive ping sent');
+  } catch (e) {}
+}, 30 * 1000);
