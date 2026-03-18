@@ -7,11 +7,15 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// CORS — allow all origins for now
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', process.env.FRONTEND_URL],
-  credentials: true
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.options('*', cors());
 app.use(express.json());
 
 // Routes
@@ -29,7 +33,7 @@ app.get('/', (req, res) => {
 // Start scheduler
 startScheduler();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Payflo backend running on port ${PORT}`);
 });
