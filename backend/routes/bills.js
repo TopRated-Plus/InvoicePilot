@@ -11,7 +11,6 @@ router.get('/', verifyToken, async (req, res) => {
     const uid = req.user.uid;
     const snapshot = await db.collection('bills')
       .where('userId', '==', uid)
-      // .orderBy('createdAt', 'desc')
       .get();
 
     const bills = [];
@@ -66,7 +65,7 @@ router.post('/', verifyToken, async (req, res) => {
       userId: uid,
       clientName,
       clientPhone,
-      clientEmail,
+      clientEmail: clientEmail || '',
       amount: Number(amount),
       description,
       dueDate: new Date(dueDate),
@@ -79,74 +78,48 @@ router.post('/', verifyToken, async (req, res) => {
       createdAt: new Date()
     });
 
-    // Send first email reminder immediately
-    await sendEmailReminder({
-      billId: billRef.id, 
-      clientEmail,
-      clientName,
-      businessName: user.businessName,
-      invoiceNumber,
-      amount,
-      dueDate,
-      upiLink
-    });
-
-    // Log reminder
-    await db.collection('reminders').add({
-      billId: billRef.id,
-      userId: uid,
-      type: 'email',
-      status: 'sent',
-      message: `First reminder sent to ${clientEmail}`,
-      sentAt: new Date()
-    });
-
-    // Update reminder count
-    await billRef.update({
-      reminderCount: 1,
-      lastReminderAt: new Date()
-    });
-
     // Respond immediately — don't wait for email
     res.json({
       id: billRef.id,
       invoiceNumber,
       message: 'Bill created and reminder sent'
     });
-    
-    // Send email in background — non blocking
-    setImmediate(async () => {
-      try {
-        await sendEmailReminder({
-          billId: billRef.id,
-          clientEmail,
-          clientName,
-          businessName: user.businessName,
-          invoiceNumber,
-          amount,
-          dueDate,
-          upiLink
-        });
-    
-        await db.collection('reminders').add({
-          billId: billRef.id,
-          userId: uid,
-          type: 'email',
-          status: 'sent',
-          message: `First reminder sent to ${clientEmail}`,
-          sentAt: new Date()
-        });
-    
-        await billRef.update({
-          reminderCount: 1,
-          lastReminderAt: new Date()
-        });
-    
-        console.log(`Email sent for ${invoiceNumber}`);
-      } catch (error) {
-        console.error('Background email error:', error.message);
-      }
-    });
+
+    // Send email in background — only if email exists
+    if (clientEmail) {
+      setImmediate(async () => {
+        try {
+          await sendEmailReminder({
+            billId: billRef.id,
+            clientEmail,
+            clientName,
+            businessName: user.businessName,
+            invoiceNumber,
+            amount,
+            dueDate,
+            upiLink
+          });
+
+          await db.collection('reminders').add({
+            billId: billRef.id,
+            userId: uid,
+            type: 'email',
+            status: 'sent',
+            message: `First reminder sent to ${clientEmail}`,
+            sentAt: new Date()
+          });
+
+          await billRef.update({
+            reminderCount: 1,
+            lastReminderAt: new Date()
+          });
+
+          console.log(`Email sent for ${invoiceNumber}`);
+        } catch (error) {
+          console.error('Background email error:', error.message);
+        }
+      });
+    }
 
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -199,6 +172,11 @@ router.post('/:id/remind', verifyToken, async (req, res) => {
 
     if (bill.reminderCount >= 5) {
       return res.status(400).json({ error: 'Maximum 5 reminders reached' });
+    }
+
+    // Only send if email exists
+    if (!bill.clientEmail) {
+      return res.status(400).json({ error: 'No email address for this client' });
     }
 
     const userDoc = await db.collection('users').doc(uid).get();

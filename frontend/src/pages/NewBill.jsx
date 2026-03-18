@@ -164,7 +164,7 @@ function NewBill() {
                 onChange={handleChange}
                 required
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-green-500"
-                placeholder="raj@example.com"
+                placeholder="Clientemail@example.com (optional)"
               />
             </div>
           </div>
