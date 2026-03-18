@@ -107,10 +107,45 @@ router.post('/', verifyToken, async (req, res) => {
       lastReminderAt: new Date()
     });
 
+    // Respond immediately — don't wait for email
     res.json({
       id: billRef.id,
       invoiceNumber,
       message: 'Bill created and reminder sent'
+    });
+    
+    // Send email in background — non blocking
+    setImmediate(async () => {
+      try {
+        await sendEmailReminder({
+          billId: billRef.id,
+          clientEmail,
+          clientName,
+          businessName: user.businessName,
+          invoiceNumber,
+          amount,
+          dueDate,
+          upiLink
+        });
+    
+        await db.collection('reminders').add({
+          billId: billRef.id,
+          userId: uid,
+          type: 'email',
+          status: 'sent',
+          message: `First reminder sent to ${clientEmail}`,
+          sentAt: new Date()
+        });
+    
+        await billRef.update({
+          reminderCount: 1,
+          lastReminderAt: new Date()
+        });
+    
+        console.log(`Email sent for ${invoiceNumber}`);
+      } catch (error) {
+        console.error('Background email error:', error.message);
+      }
     });
 
   } catch (error) {
