@@ -1,7 +1,7 @@
 const links = {
   Product: [['#how','How it works'],['#features','Features'],['#pricing','Pricing'],['#faq','FAQ']],
   Company: [['#','About'],['#','Blog'],['#','Careers'],['#','Contact']],
-  Legal: [['#','Privacy Policy'],['#','Terms of Service'],['#','Refund Policy'],['#','DPDP Compliance']],
+  Legal: [['/Privacy','Privacy Policy'],['/Terms','Terms of Service'],['#','Refund Policy'],['#','DPDP Compliance']],
 };
 
 export default function LandingFooter() {
@@ -28,7 +28,7 @@ export default function LandingFooter() {
         ))}
       </div>
       <div style={{ maxWidth: 1200, margin: '0 auto', paddingTop: 24, borderTop: '1px solid var(--lp-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-        <p style={{ fontSize: 13, color: 'var(--lp-muted)' }}>© 2026 Payflo. Built in Coimbatore, India 🇮🇳</p>
+        <p style={{ fontSize: 13, color: 'var(--lp-muted)' }}>© 2026 Payflo. Built by Scale6 Labs, India 🇮🇳</p>
         <div style={{ display: 'flex', gap: 24 }}>
           {[['#','Twitter'],['#','LinkedIn'],['#','Instagram'],['mailto:hello@payflo.in','hello@payflo.in']].map(([href, label]) => (
             <a key={label} href={href} style={{ fontSize: 13, color: 'var(--lp-muted)', textDecoration: 'none' }}>{label}</a>

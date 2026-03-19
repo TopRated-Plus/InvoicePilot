@@ -16,6 +16,8 @@ import Settings from './pages/Settings';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Landing from './pages/landing/Landing';
+import Terms from './components/Landingpage/Terms';
+import Privacy from './components/Landingpage/Privacy';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -81,6 +83,8 @@ function App() {
           <Route path="/settings" element={
             <PrivateRoute user={user}><Settings /></PrivateRoute>
           } />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
 
         </Routes>
       </div>
