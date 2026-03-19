@@ -2,19 +2,19 @@ import { Link } from 'react-router-dom';
 
 const plans = [
   {
-    name: 'Starter', price: '499', desc: 'Perfect for freelancers and solo business owners with up to 50 invoices per month.',
+    name: 'Starter', price: '699', desc: 'Perfect for freelancers and solo business owners with up to 50 invoices per month.',
     features: ['Up to 50 bills per month', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard'],
     disabled: ['WhatsApp reminders', 'AI calling'],
     featured: false
   },
   {
-    name: 'Growth', price: '999', desc: 'For growing businesses with multiple clients and higher invoice volumes.',
+    name: 'Growth', price: '1499', desc: 'For growing businesses with multiple clients and higher invoice volumes.',
     features: ['Up to 200 bills per month', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard', 'WhatsApp reminders'],
     disabled: ['AI calling'],
     featured: true
   },
   {
-    name: 'Business', price: '1999', desc: 'For distributors, manufacturers and agencies with high invoice volumes.',
+    name: 'Business', price: 'Custom pricing', desc: 'For distributors, manufacturers and agencies with high invoice volumes.',
     features: ['Unlimited bills', 'Automated email reminders', 'UPI payment links', 'Client management', 'Payment dashboard', 'WhatsApp reminders', 'AI calling (multilingual)'],
     disabled: [],
     featured: false
