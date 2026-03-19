@@ -218,10 +218,39 @@ router.get('/:billId', async (req, res) => {
           </div>
         </div>
 
+        <div class="card">
+          <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">
+            Pay directly via UPI app
+          </div>
+
+          <a href="${gpayLink}"
+             onclick="openUPI('${gpayLink}', event)"
+             class="app-btn btn-gpay">
+            Google Pay
+          </a>
+
+          <a href="${phonepeLink}"
+             onclick="openUPI('${phonepeLink}', event)"
+             class="app-btn btn-phonepe">
+            PhonePe
+          </a>
+
+          <a href="${paytmLink}"
+             onclick="openUPI('${paytmLink}', event)"
+             class="app-btn btn-paytm">
+            Paytm
+          </a>
+
+          <a href="${upiDeepLink}"
+             onclick="openUPI('${upiDeepLink}', event)"
+             class="app-btn btn-upi">
+            Other UPI App
+          </a>
+        </div>
 
         <div class="upi-box">
           <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">
-            Please copy UPI ID and pay manually
+            Or copy UPI ID and pay manually
           </div>
           <div class="upi-id" id="upiId">${pa.trim()}</div>
           <div style="font-size:13px;color:#16a34a;margin-top:6px;">
