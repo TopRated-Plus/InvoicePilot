@@ -11,7 +11,7 @@ export default function HowItWorks() {
     <div id="how" style={{ background: 'var(--lp-card)', borderTop: '1px solid var(--lp-border)', borderBottom: '1px solid var(--lp-border)', padding: '96px 5%' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <span className="section-badge">How It Works</span>
-        <h2 className="section-title">You create the bill.<br />We collect the money.</h2>
+        <h2 className="section-title">You create the bill.<br />We remind the payment.</h2>
         <p className="section-sub">Five steps. Fully automatic. Zero awkward conversations.</p>
 
         <div className="steps-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 0, marginTop: 56, position: 'relative' }}>
