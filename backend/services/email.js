@@ -30,7 +30,7 @@ async function sendEmailReminder({
     await resend.emails.send({
       from: `${businessName} <onboarding@resend.dev>`,
       to: clientEmail,
-      subject: `Payment Reminder — ${invoiceNumber} — ${formattedAmount}`,
+      subject: `${businessName} Payment Reminder ${invoiceNumber} for ${formattedAmount}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto;padding:20px;">
           <h2 style="color:#16a34a;margin-bottom:4px;">Payment Reminder</h2>
