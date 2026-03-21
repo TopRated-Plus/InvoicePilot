@@ -76,7 +76,7 @@ async function sendEmailReminder({
       : daysOverdue <= 7 ? '#fffbeb'
       : '#fef2f2';
 
-    const statusColor = !isOverdue ? '#16a34a'
+      const statusColor = !isOverdue ? '#16a34a'
       : daysOverdue <= 7 ? '#d97706'
       : '#dc2626';
 
