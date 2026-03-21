@@ -60,6 +60,8 @@ router.post('/', verifyToken, async (req, res) => {
       user.businessName
     );
 
+    const invoiceDate = new Date();
+
     // Save bill
     const billRef = await db.collection('bills').add({
       userId: uid,
@@ -69,13 +71,14 @@ router.post('/', verifyToken, async (req, res) => {
       amount: Number(amount),
       description,
       dueDate: new Date(dueDate),
+      invoiceDate,
       invoiceNumber,
       upiLink,
       status: 'pending',
       reminderCount: 0,
       lastReminderAt: null,
       paidAt: null,
-      createdAt: new Date()
+      createdAt: invoiceDate
     });
 
     // Respond immediately — don't wait for email
@@ -97,7 +100,10 @@ router.post('/', verifyToken, async (req, res) => {
             invoiceNumber,
             amount,
             dueDate,
-            upiLink
+            invoiceDate,           // ← added
+            upiLink,
+            reminderCount: 0,      // ← added
+            interestRate: user.interestRate || 0  // ← added
           });
 
           await db.collection('reminders').add({
@@ -190,7 +196,12 @@ router.post('/:id/remind', verifyToken, async (req, res) => {
       invoiceNumber: bill.invoiceNumber,
       amount: bill.amount,
       dueDate: bill.dueDate.toDate(),
-      upiLink: bill.upiLink
+      invoiceDate: bill.invoiceDate        // ← added
+        ? bill.invoiceDate.toDate()
+        : bill.createdAt.toDate(),
+      upiLink: bill.upiLink,
+      reminderCount: bill.reminderCount || 0,  // ← added
+      interestRate: user.interestRate || 0      // ← added
     });
 
     await db.collection('reminders').add({
