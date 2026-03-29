@@ -2,9 +2,9 @@
 
 **Get Paid Without Chasing.**
 
-Payflo is India’s payment collection agent for SMEs, freelancers, and agencies. You create the bill. We follow up until your client pays.
+Payflo is India’s first AI payment collection agent for SMEs, freelancers, and agencies. You create the bill. We follow up until your client pays.
 
-🌐 [payflo.in](https://payflo.in)  ·  📧 [hello@payflo.in](mailto:hello@payflo.in)  ·  🇮🇳 Built in Coimbatore, India
+🌐 [payflo.in](https://payflo.in)  ·  📧 [hello@payflo.in](mailto:hello@payflo.in) 
 
 -----
 
@@ -44,19 +44,6 @@ Zero fees. Zero commission.
 - **GSTIN Verification** — Verified identity builds client trust instantly
 - **Smart Escalation** — Tone and subject line change automatically based on days overdue
 - **Payflo ID** — Unique verified identity for freelancers without GSTIN
-
------
-
-## Pricing
-
-|Plan        |Price       |Bills    |
-|------------|------------|---------|
-|Free        |₹0/month    |5 bills  |
-|Starter     |₹699/month  |50 bills |
-|Growth      |₹1,499/month|200 bills|
-|Professional|Custom      |Unlimited|
-
-Zero transaction fees on every plan.
 
 -----
 
