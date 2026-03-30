@@ -20,6 +20,7 @@ if (fs.existsSync(".gitignore")) {
 function generateTree(dir, prefix = "") {
   let files = fs.readdirSync(dir);
 
+  
   // remove ignored files
   files = files.filter((file) => {
     const fullPath = path.join(dir, file);
