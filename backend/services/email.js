@@ -83,7 +83,7 @@ async function sendEmailReminder({
     const paymentUrl = `${process.env.BACKEND_URL}/pay/${billId}`;
 
     await resend.emails.send({
-      from: `${businessName} <onboarding@resend.dev>`,
+      from: `${businessName} <no-reply@payflo.in>`,
       to: clientEmail,
       subject,
       html: `
