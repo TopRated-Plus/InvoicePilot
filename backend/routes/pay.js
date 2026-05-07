@@ -12,6 +12,8 @@ router.get('/:billId', async (req, res) => {
     }
 
     const bill = doc.data();
+    const userDoc = await db.collection('users').doc(bill.userId).get();
+    const businessName = userDoc.exists ? (userDoc.data()?.businessName || 'Business') : 'Business';
 
     if (bill.status === 'paid') {
       return res.send(`
@@ -36,7 +38,7 @@ router.get('/:billId', async (req, res) => {
     const pa = upiUrl.searchParams.get('pa') || '';
     const am = bill.amount;
     const tn = encodeURIComponent(bill.invoiceNumber || '');
-    const pn = encodeURIComponent(bill.userId || '');
+    const pn = encodeURIComponent(bill.businessName);
 
     const amount = new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -193,7 +195,7 @@ router.get('/:billId', async (req, res) => {
         <div class="card" style="text-align:center;">
           <div style="font-size:13px;color:#6b7280;">Pay to</div>
           <div style="font-size:17px;font-weight:bold;color:#111827;margin:4px 0;">
-            ${bill.userId}
+            ${businessName}
           </div>
           <div class="amount">${amount}</div>
           <div style="font-size:13px;color:#6b7280;">${bill.invoiceNumber}</div>
