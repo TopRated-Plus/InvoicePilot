@@ -25,6 +25,25 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/adnin', verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+    const snapshot = await db.collection('bills')
+      .where('userId', '==', uid)
+      .get();
+
+    const bills = [];
+    snapshot.forEach(doc => {
+      bills.push({ id: doc.id, ...doc.data() });
+    });
+
+    res.json(bills);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Create new bill
 router.post('/', verifyToken, async (req, res) => {
   try {
